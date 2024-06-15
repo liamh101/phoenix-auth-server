@@ -16,9 +16,8 @@ final class Version20240610204706 extends AbstractMigration
 
     public function up(Schema $schema): void
     {
-        $this->addSql('CREATE TYPE algorithm AS ENUM (\'sha1\', \'sha256\', \'sha512\');');
         $this->addSql('CREATE SEQUENCE otp_record_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
-        $this->addSql('CREATE TABLE otp_record (id INT NOT NULL, name VARCHAR(255) NOT NULL, secret VARCHAR(255) NOT NULL, totp_step INT NOT NULL, otp_digits INT NOT NULL, totp_algorithm algorithm DEFAULT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE TABLE otp_record (id INT NOT NULL, name VARCHAR(255) NOT NULL, secret VARCHAR(255) NOT NULL, totp_step INT NOT NULL, otp_digits INT NOT NULL, totp_algorithm VARCHAR(10) DEFAULT NULL, PRIMARY KEY(id))');
     }
 
     public function down(Schema $schema): void

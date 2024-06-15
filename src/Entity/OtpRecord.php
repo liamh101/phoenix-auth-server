@@ -27,6 +27,12 @@ class OtpRecord
     #[ORM\Column]
     public ?int $otpDigits = null;
 
-    #[ORM\Column(type: Algorithm::NAME, nullable: true)]
-    public ?TotpAlgorithm $totpAlgorithm = null;
+    #[ORM\Column(length: 10, nullable: true)]
+    public ?string $totpAlgorithm = null;
+
+    #[ORM\Column(
+        insertable: false,
+        updatable: false,
+        generated: "ALWAYS")]
+    public string $syncHash;
 }

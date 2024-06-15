@@ -14,9 +14,5 @@ class Kernel extends BaseKernel
     public function boot(): void
     {
         parent::boot();
-
-        if (!Type::hasType(Algorithm::NAME)) {
-            Type::addType(Algorithm::NAME, Algorithm::class);
-        }
     }
 }
