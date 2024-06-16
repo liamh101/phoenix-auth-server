@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\OtpRecord;
 use App\Repository\OtpRecordRepository;
+use App\ValueObject\ApiResponse\VersionOneBase;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
@@ -21,7 +22,7 @@ class RecordController extends AbstractController
     #[Route('/{id}', name: 'fetch', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function fetch(int $id): Response
     {
-        return $this->json($this->recordRepository->find($id));
+        return $this->json(new VersionOneBase($this->recordRepository->find($id)));
     }
 
     #[Route('', name: 'post', methods: ['POST'])]
@@ -30,12 +31,12 @@ class RecordController extends AbstractController
     ): Response {
 
         $this->recordRepository->save($record);
-        return $this->json($record);
+        return $this->json(new VersionOneBase($record));
     }
 
     #[Route('/hashes', name: 'hashes', methods: ['GET'])]
     public function getHashedRecords(): Response
     {
-        return $this->json($this->recordRepository->getAccountHashes());
+        return $this->json(new VersionOneBase($this->recordRepository->getAccountHashes()));
     }
 }
