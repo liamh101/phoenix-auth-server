@@ -16,6 +16,31 @@ class OtpRecordRepository extends ServiceEntityRepository
         parent::__construct($registry, OtpRecord::class);
     }
 
+    public function getAll(): array
+    {
+        return $this->createQueryBuilder('o')
+            ->orderBy('o.id', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function getAccountHashes(): array
+    {
+        return $this->createQueryBuilder('o')
+            ->select('o.id', 'o.syncHash')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function save(OtpRecord $record, bool $flush = true): void
+    {
+        $this->getEntityManager()->persist($record);
+
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
+
     //    /**
     //     * @return OtpRecord[] Returns an array of OtpRecord objects
     //     */
