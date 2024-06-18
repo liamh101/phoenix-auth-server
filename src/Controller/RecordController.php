@@ -4,7 +4,9 @@ namespace App\Controller;
 
 use App\Entity\OtpRecord;
 use App\Repository\OtpRecordRepository;
+use App\ValueObject\ApiResponse\ErrorResponse;
 use App\ValueObject\ApiResponse\VersionOneBase;
+use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
@@ -22,14 +24,19 @@ class RecordController extends AbstractController
     #[Route('/{id}', name: 'fetch', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function fetch(int $id): Response
     {
-        return $this->json(new VersionOneBase($this->recordRepository->find($id)));
+        $record = $this->recordRepository->find($id);
+
+        if (!$record instanceof OtpRecord) {
+            return $this->json(new ErrorResponse('Record Cannot Be Found'), 404);
+        }
+
+        return $this->json(new VersionOneBase($record));
     }
 
     #[Route('', name: 'post', methods: ['POST'])]
     public function post(
         #[MapRequestPayload] OtpRecord $record
     ): Response {
-
         $this->recordRepository->save($record);
         return $this->json(new VersionOneBase($record));
     }

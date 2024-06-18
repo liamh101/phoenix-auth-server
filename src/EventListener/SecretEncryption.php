@@ -34,11 +34,19 @@ readonly class SecretEncryption
 
     public function loadSecret(OtpRecord $record, PostLoadEventArgs $args): void
     {
+        if (!$record->secret) {
+            return;
+        }
+
         $record->secret = $this->encryptionService->decryptString($record->secret);
     }
 
     private function encryptSecret(OtpRecord $record): void
     {
+        if (!$record->secret) {
+            return;
+        }
+
         $record->secret = $this->encryptionService->encryptString($record->secret);
     }
 }

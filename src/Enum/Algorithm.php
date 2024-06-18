@@ -8,6 +8,9 @@ enum Algorithm: string
     case SHA256 = 'sha256';
     case SHA512 = 'sha512';
 
+    /**
+     * @return null[]|string[]
+     */
     public static function choiceValidation(): array
     {
         return [null, self::SHA1->value, self::SHA256->value, self::SHA512->value];

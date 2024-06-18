@@ -16,6 +16,9 @@ class OtpRecordRepository extends ServiceEntityRepository
         parent::__construct($registry, OtpRecord::class);
     }
 
+    /**
+     * @return OtpRecord[]
+     */
     public function getAll(): array
     {
         return $this->createQueryBuilder('o')
@@ -24,6 +27,10 @@ class OtpRecordRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+
+    /**
+     * @return OtpRecord[]
+     */
     public function getAccountHashes(): array
     {
         return $this->createQueryBuilder('o')

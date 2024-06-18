@@ -37,7 +37,13 @@ readonly class EncryptionService
         $iv = substr($details, 0, $ivlen);
         $encryptedText = substr($details, $ivlen);
 
-        return openssl_decrypt($encryptedText, self::CIPHER, $key, OPENSSL_RAW_DATA, $iv);
+        $decryptedText =  openssl_decrypt($encryptedText, self::CIPHER, $key, OPENSSL_RAW_DATA, $iv);
+
+        if (!$decryptedText) {
+            throw new \RuntimeException('Can\'t decrypt secret');
+        }
+
+        return $decryptedText;
     }
 
     private function getIvLength(): int

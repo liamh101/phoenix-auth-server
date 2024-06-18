@@ -9,6 +9,9 @@ enum Step: int
     CASE NINETY = 90;
     CASE ONE_HUNDRED_AND_TWENTY = 120;
 
+    /**
+     * @return int[]
+     */
     public static function choiceValidation(): array
     {
         return [self::THIRTY->value, self::SIXTY->value, self::NINETY->value, self::ONE_HUNDRED_AND_TWENTY->value];
