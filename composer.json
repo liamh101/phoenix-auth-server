@@ -32,6 +32,7 @@
         "ext-openssl": "*"
     },
     "require-dev": {
+        "doctrine/coding-standard": "^12.0",
         "phpstan/phpstan": "^1.11",
         "roave/security-advisories": "dev-latest",
         "symfony/debug-bundle": "7.1.*",
@@ -44,7 +45,8 @@
         "allow-plugins": {
             "php-http/discovery": true,
             "symfony/flex": true,
-            "symfony/runtime": true
+            "symfony/runtime": true,
+            "dealerdirect/phpcodesniffer-composer-installer": true
         },
         "sort-packages": true
     },

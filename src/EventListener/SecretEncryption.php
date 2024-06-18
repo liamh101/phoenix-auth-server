@@ -17,7 +17,7 @@ readonly class SecretEncryption
 {
     public function __construct(
         private EncryptionService $encryptionService,
-    ){
+    ) {
     }
 
     public function prePersist(OtpRecord $record, PrePersistEventArgs $event): void

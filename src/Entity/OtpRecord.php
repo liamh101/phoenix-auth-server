@@ -50,6 +50,7 @@ class OtpRecord
     #[ORM\Column(
         insertable: false,
         updatable: false,
-        generated: "ALWAYS")]
+        generated: "ALWAYS"
+    )]
     public string $syncHash;
 }

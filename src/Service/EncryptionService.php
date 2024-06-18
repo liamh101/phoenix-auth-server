@@ -59,7 +59,7 @@ readonly class EncryptionService
 
     private function generateKey(): string
     {
-        $key = openssl_digest($this->encryptionKey, self::DIGEST_ALGO, TRUE);
+        $key = openssl_digest($this->encryptionKey, self::DIGEST_ALGO, true);
 
         if (!$key) {
             throw new \RuntimeException('Could not generate encryption key');
