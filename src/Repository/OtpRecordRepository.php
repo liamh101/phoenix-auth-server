@@ -51,7 +51,6 @@ class OtpRecordRepository extends ServiceEntityRepository
                 ->select('o.id', 'o.syncHash')
                 ->where('o.id = :id')
                 ->setParameter('id', $id)
-
                 ->getQuery()
                 ->getSingleResult();
         } catch (NoResultException $e) {
