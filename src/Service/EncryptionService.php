@@ -2,6 +2,8 @@
 
 namespace App\Service;
 
+use App\Exception\EncryptionException;
+
 readonly class EncryptionService
 {
     public const string CIPHER = 'aes-128-cbc';
@@ -19,7 +21,7 @@ readonly class EncryptionService
         $iv = openssl_random_pseudo_bytes($ivlen);
 
         if (!$iv) {
-            throw new \RuntimeException('Could not generate IV!');
+            throw EncryptionException::IvException();
         }
 
         $encryptedText = openssl_encrypt($originalString, self::CIPHER, $key, OPENSSL_RAW_DATA, $iv);
@@ -40,7 +42,7 @@ readonly class EncryptionService
         $decryptedText =  openssl_decrypt($encryptedText, self::CIPHER, $key, OPENSSL_RAW_DATA, $iv);
 
         if (!$decryptedText) {
-            throw new \RuntimeException('Can\'t decrypt secret');
+            throw EncryptionException::DecryptionException();
         }
 
         return $decryptedText;
@@ -51,7 +53,7 @@ readonly class EncryptionService
         $ivLen = openssl_cipher_iv_length(self::CIPHER);
 
         if (!$ivLen) {
-            throw new \RuntimeException('Could not generate IV length!');
+            throw EncryptionException::IvException();
         }
 
         return $ivLen;
@@ -62,7 +64,7 @@ readonly class EncryptionService
         $key = openssl_digest($this->encryptionKey, self::DIGEST_ALGO, true);
 
         if (!$key) {
-            throw new \RuntimeException('Could not generate encryption key');
+            throw EncryptionException::KeyGenerationException();
         }
 
         return $key;

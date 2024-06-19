@@ -11,6 +11,11 @@ parameters:
 			path: src/Repository/OtpRecordRepository.php
 
 		-
+			message: "#^Method App\\\\Repository\\\\OtpRecordRepository\\:\\:getSingleAccountHash\\(\\) should return array\\<string, string\\>\\|null but returns mixed\\.$#"
+			count: 1
+			path: src/Repository/OtpRecordRepository.php
+
+		-
 			message: "#^Method App\\\\ValueObject\\\\ApiResponse\\\\VersionOneBase\\:\\:__construct\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/ValueObject/ApiResponse/VersionOneBase.php

@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\OtpRecord;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NoResultException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -37,6 +38,25 @@ class OtpRecordRepository extends ServiceEntityRepository
             ->select('o.id', 'o.syncHash')
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * @param int $id
+     * @return array<string,string>|null
+     */
+    public function getSingleAccountHash(int $id): ?array
+    {
+        try {
+            return $this->createQueryBuilder('o')
+                ->select('o.id', 'o.syncHash')
+                ->where('o.id = :id')
+                ->setParameter('id', $id)
+
+                ->getQuery()
+                ->getSingleResult();
+        } catch (NoResultException $e) {
+            return null;
+        }
     }
 
     public function save(OtpRecord $record, bool $flush = true): void

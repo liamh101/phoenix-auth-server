@@ -27,7 +27,7 @@ class RecordController extends AbstractController
         $record = $this->recordRepository->find($id);
 
         if (!$record instanceof OtpRecord) {
-            return $this->json(new ErrorResponse('Record Cannot Be Found'), 404);
+            return $this->json(new ErrorResponse(ErrorResponse::generateNotFoundErrorMessage(OtpRecord::class)), 404);
         }
 
         return $this->json(new VersionOneBase($record));
@@ -38,7 +38,18 @@ class RecordController extends AbstractController
         #[MapRequestPayload] OtpRecord $record
     ): Response {
         $this->recordRepository->save($record);
-        return $this->json(new VersionOneBase($record));
+
+        if (!$record->id) {
+            throw new \RuntimeException('Record not returned correctly');
+        }
+
+        $hashedRecord = $this->recordRepository->getSingleAccountHash($record->id);
+
+        if (!$hashedRecord) {
+            return $this->json(new ErrorResponse(ErrorResponse::generateNotFoundErrorMessage(OtpRecord::class)), 404);
+        }
+
+        return $this->json(new VersionOneBase($hashedRecord));
     }
 
     #[Route('/hashes', name: 'hashes', methods: ['GET'])]
