@@ -46,7 +46,7 @@ class RecordController extends AbstractController
         $hashedRecord = $this->recordRepository->getSingleAccountHash($record->id);
 
         if (!$hashedRecord) {
-            return $this->json(new ErrorResponse(ErrorResponse::generateNotFoundErrorMessage(OtpRecord::class)), 404);
+            return $this->json(new ErrorResponse(ErrorResponse::generateNotFoundErrorMessage(OtpRecord::class)), Response::HTTP_NOT_FOUND);
         }
 
         return $this->json(new VersionOneBase($hashedRecord));
