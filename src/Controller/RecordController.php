@@ -7,6 +7,7 @@ use App\Repository\OtpRecordRepository;
 use App\Service\RecordService;
 use App\ValueObject\ApiResponse\ErrorResponse;
 use App\ValueObject\ApiResponse\VersionOneBase;
+use App\ValueObject\RepoResponse\OtpRecord\AccountManifest;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -51,12 +52,16 @@ class RecordController extends AbstractController
             return $this->json(new ErrorResponse(ErrorResponse::generateNotFoundErrorMessage(OtpRecord::class)), Response::HTTP_NOT_FOUND);
         }
 
-        return $this->json(new VersionOneBase($hashedRecord));
+        return $this->json(new VersionOneBase($hashedRecord->formatResponse()));
     }
 
-    #[Route('/hashes', name: 'hashes', methods: ['GET'])]
-    public function getHashedRecords(): Response
+    #[Route('/manifest', name: 'manifest', methods: ['GET'])]
+    public function getAccountManifest(): Response
     {
-        return $this->json(new VersionOneBase($this->recordRepository->getAccountHashes()));
+        return $this->json(
+            new VersionOneBase(
+                array_map(static fn (AccountManifest $manifest) => $manifest->formatResponse(), $this->recordRepository->getAccountManifest())
+            )
+        );
     }
 }
