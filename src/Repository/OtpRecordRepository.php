@@ -47,12 +47,16 @@ class OtpRecordRepository extends ServiceEntityRepository
     public function getSingleAccountHash(int $id): ?array
     {
         try {
-            return $this->createQueryBuilder('o')
-                ->select('o.id', 'o.syncHash')
+            $record =  $this->createQueryBuilder('o')
+                ->select('o.id', 'o.syncHash', 'o.updatedAt')
                 ->where('o.id = :id')
                 ->setParameter('id', $id)
                 ->getQuery()
                 ->getSingleResult();
+
+            $record['updatedAt'] = $record['updatedAt']->format('U');
+
+            return $record;
         } catch (NoResultException $e) {
             return null;
         }

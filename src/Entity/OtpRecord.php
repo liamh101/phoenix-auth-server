@@ -10,6 +10,7 @@ use App\Repository\OtpRecordRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: OtpRecordRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class OtpRecord
 {
     #[ORM\Id]
@@ -25,6 +26,7 @@ class OtpRecord
     )]
     public ?string $name = null;
 
+    //Hashed In SecretEncryption EventListener
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
     #[Assert\Length(
@@ -47,10 +49,25 @@ class OtpRecord
     #[Assert\Choice(callback: [Algorithm::class, 'choiceValidation'])]
     public ?string $totpAlgorithm = null;
 
-    #[ORM\Column(
-        insertable: false,
-        updatable: false,
-        generated: "ALWAYS"
-    )]
+    #[ORM\Column(length: 128)]
     public string $syncHash;
+
+    #[ORM\Column]
+    public \DateTimeImmutable $createdAt;
+
+    #[ORM\Column]
+    public \DateTime $updatedAt;
+
+    #[ORM\PrePersist]
+    public function setCreatedAt(): void
+    {
+        $this->createdAt = new \DateTimeImmutable('now');
+    }
+
+    #[ORM\PreUpdate]
+    #[ORM\PrePersist]
+    public function setUpdatedAt(): void
+    {
+        $this->updatedAt = new \DateTime('now');
+    }
 }
