@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\OtpRecord;
 use App\Repository\OtpRecordRepository;
+use App\Service\RecordService;
 use App\ValueObject\ApiResponse\ErrorResponse;
 use App\ValueObject\ApiResponse\VersionOneBase;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
@@ -13,11 +14,11 @@ use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/api/records', name: 'record_')]
-
 class RecordController extends AbstractController
 {
     public function __construct(
         private readonly OtpRecordRepository $recordRepository,
+        private readonly RecordService $recordService,
     ) {
     }
 
@@ -37,6 +38,7 @@ class RecordController extends AbstractController
     public function post(
         #[MapRequestPayload] OtpRecord $record
     ): Response {
+        $record->syncHash = $this->recordService->generateRecordHash($record);
         $this->recordRepository->save($record);
 
         if (!$record->id) {

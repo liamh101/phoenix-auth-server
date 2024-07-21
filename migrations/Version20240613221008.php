@@ -16,7 +16,7 @@ final class Version20240613221008 extends AbstractMigration
 
     public function up(Schema $schema): void
     {
-        $this->addSql('ALTER TABLE otp_record ADD COLUMN sync_hash VARCHAR(100) GENERATED ALWAYS AS (md5(name || secret || totp_step || otp_digits || coalesce(totp_algorithm, \'\'))::VARCHAR) STORED');
+        $this->addSql('ALTER TABLE otp_record ADD COLUMN sync_hash VARCHAR(128) NOT NULL');
     }
 
     public function down(Schema $schema): void
