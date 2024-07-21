@@ -42,7 +42,7 @@ readonly class EncryptionService
         $decryptedText =  openssl_decrypt($encryptedText, self::CIPHER, $key, OPENSSL_RAW_DATA, $iv);
 
         if (!$decryptedText) {
-            throw EncryptionException::DecryptionException();
+            throw EncryptionException::decryptionException();
         }
 
         return $decryptedText;
@@ -53,7 +53,7 @@ readonly class EncryptionService
         $ivLen = openssl_cipher_iv_length(self::CIPHER);
 
         if (!$ivLen) {
-            throw EncryptionException::IvException();
+            throw EncryptionException::ivException();
         }
 
         return $ivLen;
@@ -64,7 +64,7 @@ readonly class EncryptionService
         $key = openssl_digest($this->encryptionKey, self::DIGEST_ALGO, true);
 
         if (!$key) {
-            throw EncryptionException::KeyGenerationException();
+            throw EncryptionException::keyGenerationException();
         }
 
         return $key;

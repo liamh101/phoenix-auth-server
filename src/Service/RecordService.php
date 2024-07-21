@@ -12,5 +12,4 @@ readonly class RecordService
     {
         return hash(self::HASH_ALGORITHM, $record->name . $record->secret . $record->totpStep . $record->otpDigits . $record->totpAlgorithm);
     }
-
 }

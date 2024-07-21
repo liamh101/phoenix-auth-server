@@ -3,6 +3,8 @@
 namespace App\Repository;
 
 use App\Entity\OtpRecord;
+use App\ValueObject\RepoResponse\OtpRecord\AccountHash;
+use App\ValueObject\RepoResponse\OtpRecord\AccountManifest;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\NoResultException;
 use Doctrine\Persistence\ManagerRegistry;
@@ -22,31 +24,34 @@ class OtpRecordRepository extends ServiceEntityRepository
      */
     public function getAll(): array
     {
-        return $this->createQueryBuilder('o')
+        /** @var OtpRecord[] $result */
+        $result = $this->createQueryBuilder('o')
             ->orderBy('o.id', 'DESC')
             ->getQuery()
             ->getResult();
+
+        return $result;
     }
 
 
     /**
-     * @return OtpRecord[]
+     * @return AccountManifest[]
      */
-    public function getAccountHashes(): array
+    public function getAccountManifest(): array
     {
-        return $this->createQueryBuilder('o')
-            ->select('o.id', 'o.syncHash')
+        /** @var array $result */
+        $result = $this->createQueryBuilder('o')
+            ->select('o.id', 'o.updatedAt')
             ->getQuery()
             ->getResult();
+
+        return AccountManifest::hydrateMany($result);
     }
 
-    /**
-     * @param int $id
-     * @return array<string,string>|null
-     */
-    public function getSingleAccountHash(int $id): ?array
+    public function getSingleAccountHash(int $id): ?AccountHash
     {
         try {
+            /** @var array $record */
             $record =  $this->createQueryBuilder('o')
                 ->select('o.id', 'o.syncHash', 'o.updatedAt')
                 ->where('o.id = :id')
@@ -54,9 +59,7 @@ class OtpRecordRepository extends ServiceEntityRepository
                 ->getQuery()
                 ->getSingleResult();
 
-            $record['updatedAt'] = $record['updatedAt']->format('U');
-
-            return $record;
+            return new AccountHash(id: $record['id'], syncHash: $record['syncHash'], updatedAt: $record['updatedAt']);
         } catch (NoResultException $e) {
             return null;
         }

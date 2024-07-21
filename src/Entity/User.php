@@ -80,6 +80,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getPassword(): string
     {
+        if (!$this->password) {
+            throw new \RuntimeException('Password not set');
+        }
+
         return $this->password;
     }
 
