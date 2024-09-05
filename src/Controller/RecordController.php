@@ -62,6 +62,25 @@ class RecordController extends AbstractController
         return $this->json(new VersionOneBase($hashedRecord->formatResponse()));
     }
 
+    #[Route('/{id}', name: 'put', requirements: ['id' => '\d+'], methods: ['PUT'])]
+    public function put(
+        int $id,
+        #[MapRequestPayload] OtpRecord $record
+    ): Response {
+        /** @var OtpRecord $existingRecord */
+        $existingRecord = $this->recordRepository->find($id);
+
+        $updatedRecord = $this->recordService->updateExistingRecord($existingRecord, $record);
+        $this->recordRepository->save($updatedRecord);
+        $hashedRecord = $this->recordRepository->getSingleAccountHash($updatedRecord->id);
+
+        if (!$hashedRecord) {
+            return $this->json(new ErrorResponse(ErrorResponse::generateNotFoundErrorMessage(OtpRecord::class)), Response::HTTP_NOT_FOUND);
+        }
+
+        return $this->json(new VersionOneBase($hashedRecord->formatResponse()));
+    }
+
     #[Route('/manifest', name: 'manifest', methods: ['GET'])]
     public function getAccountManifest(): Response
     {

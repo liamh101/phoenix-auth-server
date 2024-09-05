@@ -12,4 +12,18 @@ readonly class RecordService
     {
         return hash(self::HASH_ALGORITHM, $record->name . $record->secret . $record->totpStep . $record->otpDigits . $record->totpAlgorithm);
     }
+
+    public function updateExistingRecord(OtpRecord $existingRecord, OtpRecord $newRecord): OtpRecord
+    {
+        $hash = $this->generateRecordHash($newRecord);
+
+        $existingRecord->name = $newRecord->name;
+        $existingRecord->secret = $newRecord->secret;
+        $existingRecord->totpStep = $newRecord->totpStep;
+        $existingRecord->otpDigits = $newRecord->otpDigits;
+        $existingRecord->totpAlgorithm = $newRecord->totpAlgorithm;
+        $existingRecord->syncHash = $hash;
+
+        return $existingRecord;
+    }
 }
