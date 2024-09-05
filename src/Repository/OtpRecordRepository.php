@@ -65,6 +65,22 @@ class OtpRecordRepository extends ServiceEntityRepository
         }
     }
 
+    public function findExistingAccountHash(string $hash): ?AccountHash
+    {
+        try {
+            $record = $this->createQueryBuilder('o')
+                ->select('o.id', 'o.syncHash', 'o.updatedAt')
+                ->where('o.syncHash = :hash')
+                ->setParameter('hash', $hash)
+                ->getQuery()
+                ->getSingleResult();
+
+            return new AccountHash(id: $record['id'], syncHash: $record['syncHash'], updatedAt: $record['updatedAt']);
+        } catch (NoResultException $e) {
+            return null;
+        }
+    }
+
     public function save(OtpRecord $record, bool $flush = true): void
     {
         $this->getEntityManager()->persist($record);

@@ -39,7 +39,14 @@ class RecordController extends AbstractController
     public function post(
         #[MapRequestPayload] OtpRecord $record
     ): Response {
-        $record->syncHash = $this->recordService->generateRecordHash($record);
+        $hash = $this->recordService->generateRecordHash($record);
+
+        $existingHash = $this->recordRepository->findExistingAccountHash($hash);
+        if ($existingHash) {
+            return $this->json(new VersionOneBase($existingHash->formatResponse()));
+        }
+
+        $record->syncHash = $hash;
         $this->recordRepository->save($record);
 
         if (!$record->id) {
