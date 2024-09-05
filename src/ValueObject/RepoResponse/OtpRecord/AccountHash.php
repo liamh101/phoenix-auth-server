@@ -16,7 +16,7 @@ class AccountHash
         return [
             'id' => $this->id,
             'syncHash' => $this->syncHash,
-            'updatedAt' => $this->updatedAt->format('U'),
+            'updatedAt' => (int)$this->updatedAt->format('U'),
         ];
     }
 }

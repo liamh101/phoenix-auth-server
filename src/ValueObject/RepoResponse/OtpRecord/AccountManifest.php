@@ -34,7 +34,7 @@ class AccountManifest
     {
         return [
             'id' => $this->id,
-            'updatedAt' => $this->updatedAt->format('U'),
+            'updatedAt' => (int)$this->updatedAt->format('U'),
         ];
     }
 }
