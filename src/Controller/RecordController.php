@@ -32,7 +32,7 @@ class RecordController extends AbstractController
             return $this->json(new ErrorResponse(ErrorResponse::generateNotFoundErrorMessage(OtpRecord::class)), 404);
         }
 
-        return $this->json(new VersionOneBase($record));
+        return $this->json(new VersionOneBase($record->formattedResponse()));
     }
 
     #[Route('', name: 'post', methods: ['POST'])]

@@ -70,4 +70,18 @@ class OtpRecord
     {
         $this->updatedAt = new \DateTime('now');
     }
+
+    public function formattedResponse(): array
+    {
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+            'secret' => $this->secret,
+            'totpStep' => $this->totpStep,
+            'otpDigits' => $this->otpDigits,
+            'algorithm' => $this->totpAlgorithm,
+            'syncHash' => $this->syncHash,
+            'updatedAt' => (int)$this->updatedAt->format('U'),
+        ];
+    }
 }
