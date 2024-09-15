@@ -90,6 +90,15 @@ class OtpRecordRepository extends ServiceEntityRepository
         }
     }
 
+    public function delete(OtpRecord $record, bool $flush = true): void
+    {
+        $this->getEntityManager()->remove($record);
+
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
+
     //    /**
     //     * @return OtpRecord[] Returns an array of OtpRecord objects
     //     */
