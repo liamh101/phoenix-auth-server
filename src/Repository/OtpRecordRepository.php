@@ -42,6 +42,7 @@ class OtpRecordRepository extends ServiceEntityRepository
         /** @var array $result */
         $result = $this->createQueryBuilder('o')
             ->select('o.id', 'o.updatedAt')
+            ->orderBy('o.updatedAt', 'DESC')
             ->getQuery()
             ->getResult();
 
