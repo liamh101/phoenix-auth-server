@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\Service;
+namespace App\Tests\Unit\Service;
 
 use App\Entity\OtpRecord;
 use App\Service\RecordService;

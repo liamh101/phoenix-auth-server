@@ -1,12 +1,11 @@
 <?php
 
-namespace App\Tests\EventListener;
+namespace App\Tests\Unit\EventListener;
 
 use App\Entity\OtpRecord;
 use App\EventListener\SecretEncryption;
 use App\Service\EncryptionService;
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Event\PostPersistEventArgs;
 use Doctrine\ORM\Event\PrePersistEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use PHPUnit\Framework\TestCase;
