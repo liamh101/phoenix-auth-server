@@ -56,7 +56,12 @@ class RecordController extends AbstractController
         $hashedRecord = $this->recordRepository->getSingleAccountHash($record->id);
 
         if (!$hashedRecord) {
-            return $this->json(new ErrorResponse(ErrorResponse::generateNotFoundErrorMessage(OtpRecord::class)), Response::HTTP_NOT_FOUND);
+            return $this->json(
+                new ErrorResponse(
+                    ErrorResponse::generateNotFoundErrorMessage(OtpRecord::class)
+                ),
+                Response::HTTP_NOT_FOUND
+            );
         }
 
         return $this->json(new VersionOneBase($hashedRecord->formatResponse()));
@@ -75,10 +80,20 @@ class RecordController extends AbstractController
 
         $updatedRecord = $this->recordService->updateExistingRecord($existingRecord, $record);
         $this->recordRepository->save($updatedRecord);
+
+        if (!$updatedRecord->id) {
+            throw new \RuntimeException('Record not returned correctly, missing id');
+        }
+
         $hashedRecord = $this->recordRepository->getSingleAccountHash($updatedRecord->id);
 
         if (!$hashedRecord) {
-            return $this->json(new ErrorResponse(ErrorResponse::generateNotFoundErrorMessage(OtpRecord::class)), Response::HTTP_NOT_FOUND);
+            return $this->json(
+                new ErrorResponse(
+                    ErrorResponse::generateNotFoundErrorMessage(OtpRecord::class)
+                ),
+                Response::HTTP_NOT_FOUND
+            );
         }
 
         return $this->json(new VersionOneBase($hashedRecord->formatResponse()));
@@ -90,7 +105,12 @@ class RecordController extends AbstractController
         $existingRecord = $this->recordRepository->find($id);
 
         if (!$existingRecord instanceof OtpRecord) {
-            return $this->json(new ErrorResponse(ErrorResponse::generateNotFoundErrorMessage(OtpRecord::class)), 404);
+            return $this->json(
+                new ErrorResponse(
+                    ErrorResponse::generateNotFoundErrorMessage(OtpRecord::class)
+                ),
+                Response::HTTP_NOT_FOUND
+            );
         }
 
         $this->recordRepository->delete($existingRecord);
@@ -103,7 +123,10 @@ class RecordController extends AbstractController
     {
         return $this->json(
             new VersionOneBase(
-                array_map(static fn (AccountManifest $manifest) => $manifest->formatResponse(), $this->recordRepository->getAccountManifest())
+                array_map(
+                    static fn (AccountManifest $manifest) => $manifest->formatResponse(),
+                    $this->recordRepository->getAccountManifest()
+                )
             )
         );
     }

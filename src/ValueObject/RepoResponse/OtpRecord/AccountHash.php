@@ -11,6 +11,9 @@ class AccountHash
     ) {
     }
 
+    /**
+     * @return array<string, int|string>
+     */
     public function formatResponse(): array
     {
         return [

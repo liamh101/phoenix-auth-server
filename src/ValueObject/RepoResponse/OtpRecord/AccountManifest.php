@@ -11,13 +11,18 @@ class AccountManifest
     }
 
     /**
-     * @return array<self>
+     * @param array<int, array<string, int|\DateTimeInterface>> $data
+     * @return array<int, self>
      */
     public static function hydrateMany(array $data): array
     {
         $response = [];
 
         foreach ($data as $record) {
+            if (!is_int($record['id']) || !$record['updatedAt'] instanceof \DateTimeInterface) {
+                throw new \RuntimeException('Invalid Data Provided');
+            }
+
             $response[] = new AccountManifest(
                 id: $record['id'],
                 updatedAt: $record['updatedAt'],

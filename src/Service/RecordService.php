@@ -10,7 +10,10 @@ readonly class RecordService
 
     public function generateRecordHash(OtpRecord $record): string
     {
-        return hash(self::HASH_ALGORITHM, $record->name . $record->secret . $record->totpStep . $record->otpDigits . $record->totpAlgorithm);
+        return hash(
+            self::HASH_ALGORITHM,
+            $record->name . $record->secret . $record->totpStep . $record->otpDigits . $record->totpAlgorithm
+        );
     }
 
     public function updateExistingRecord(OtpRecord $existingRecord, OtpRecord $newRecord): OtpRecord

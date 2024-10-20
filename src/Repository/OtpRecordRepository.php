@@ -39,7 +39,7 @@ class OtpRecordRepository extends ServiceEntityRepository
      */
     public function getAccountManifest(): array
     {
-        /** @var array $result */
+        /** @var array<int, array<string, int|\DateTimeInterface>> $result */
         $result = $this->createQueryBuilder('o')
             ->select('o.id', 'o.updatedAt')
             ->orderBy('o.updatedAt', 'DESC')
@@ -52,13 +52,21 @@ class OtpRecordRepository extends ServiceEntityRepository
     public function getSingleAccountHash(int $id): ?AccountHash
     {
         try {
-            /** @var array $record */
+            /** @var array<string, int|string|\DateTimeInterface> $record */
             $record =  $this->createQueryBuilder('o')
                 ->select('o.id', 'o.syncHash', 'o.updatedAt')
                 ->where('o.id = :id')
                 ->setParameter('id', $id)
                 ->getQuery()
                 ->getSingleResult();
+
+            if (
+                !is_int($record['id']) ||
+                !is_string($record['syncHash']) ||
+                !$record['updatedAt'] instanceof \DateTimeInterface
+            ) {
+                throw new \RuntimeException('Invalid data returned.');
+            }
 
             return new AccountHash(id: $record['id'], syncHash: $record['syncHash'], updatedAt: $record['updatedAt']);
         } catch (NoResultException $e) {
@@ -69,12 +77,21 @@ class OtpRecordRepository extends ServiceEntityRepository
     public function findExistingAccountHash(string $hash): ?AccountHash
     {
         try {
+            /** @var array<string, int|string|\DateTimeInterface> $record */
             $record = $this->createQueryBuilder('o')
                 ->select('o.id', 'o.syncHash', 'o.updatedAt')
                 ->where('o.syncHash = :hash')
                 ->setParameter('hash', $hash)
                 ->getQuery()
                 ->getSingleResult();
+
+            if (
+                !is_int($record['id']) ||
+                !is_string($record['syncHash']) ||
+                !$record['updatedAt'] instanceof \DateTimeInterface
+            ) {
+                throw new \RuntimeException('Invalid data returned.');
+            }
 
             return new AccountHash(id: $record['id'], syncHash: $record['syncHash'], updatedAt: $record['updatedAt']);
         } catch (NoResultException $e) {

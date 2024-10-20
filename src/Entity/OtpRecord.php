@@ -71,6 +71,9 @@ class OtpRecord
         $this->updatedAt = new \DateTime('now');
     }
 
+    /**
+     * @return array<string, string|int|null>
+     */
     public function formattedResponse(): array
     {
         return [
