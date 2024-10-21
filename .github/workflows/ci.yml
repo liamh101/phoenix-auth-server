@@ -15,18 +15,6 @@ jobs:
   tests:
     name: Tests
     runs-on: ubuntu-latest
-    services:
-      postgres:
-        image: postgres
-        env:
-          POSTGRES_USER: app
-          POSTGRES_PASSWORD: pA33w0rd
-          POSTGRES_DB: app_test
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
     steps:
       -
         name: Checkout
@@ -75,7 +63,6 @@ jobs:
       -
         name: PHPCS
         run: docker compose exec -T php vendor/bin/phpcs
-        
   lint:
     name: Docker Lint
     runs-on: ubuntu-latest
