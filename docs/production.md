@@ -63,8 +63,12 @@ Go into the directory containing your project (`<project-name>`), and start the 
 SERVER_NAME=your-domain-name.example.com \
 APP_SECRET=ChangeMe \
 CADDY_MERCURE_JWT_SECRET=ChangeThisMercureHubJWTSecretKey \
+DATABASE_URL=postgresql://app:!ChangeMe!@127.0.0.1:5432/app?serverVersion=16&charset=utf8 \
 docker compose -f compose.yaml -f compose.prod.yaml up -d --wait
 ```
+
+> [!NOTE]
+> A Postgres database will be spun up alongside the server, I highly recommend replacing the default password.
 
 Be sure to replace `your-domain-name.example.com` with your actual domain name and to set the values of `APP_SECRET`, `CADDY_MERCURE_JWT_SECRET` to cryptographically secure random values.
 
@@ -85,6 +89,7 @@ Alternatively, if you don't want to expose an HTTPS server but only an HTTP one,
 SERVER_NAME=:80 \
 APP_SECRET=ChangeMe \
 CADDY_MERCURE_JWT_SECRET=ChangeThisMercureHubJWTSecretKey \
+DATABASE_URL=postgresql://app:!ChangeMe!@127.0.0.1:5432/app?serverVersion=16&charset=utf8 \
 docker compose -f compose.yaml -f compose.prod.yaml up -d --wait
 ```
 
