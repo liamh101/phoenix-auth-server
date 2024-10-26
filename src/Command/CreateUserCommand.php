@@ -22,8 +22,7 @@ class CreateUserCommand extends Command
     public function __construct(
         private readonly UserPasswordHasherInterface $passwordHasher,
         private readonly UserRepository $userRepository,
-    )
-    {
+    ) {
         parent::__construct();
     }
 
@@ -39,11 +38,12 @@ class CreateUserCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
+
         $email = $input->getArgument('email');
         $password = $input->getArgument('password');
         $multiUser = $input->getOption('multi-user');
 
-        if (!$email || !$password) {
+        if (!is_string($email) || !is_string($password)) {
             $io->error('Email and password are required.');
             return Command::FAILURE;
         }
