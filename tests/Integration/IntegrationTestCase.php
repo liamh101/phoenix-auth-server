@@ -13,4 +13,11 @@ class IntegrationTestCase extends KernelTestCase
 
         self::bootKernel();
     }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+
+        self::ensureKernelShutdown();
+    }
 }
