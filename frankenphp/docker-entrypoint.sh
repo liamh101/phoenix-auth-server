@@ -51,6 +51,20 @@ if [ "$1" = 'frankenphp' ] || [ "$1" = 'php' ] || [ "$1" = 'bin/console' ]; then
 		if [ "$( find ./migrations -iname '*.php' -print -quit )" ]; then
 			php bin/console doctrine:migrations:migrate --no-interaction --all-or-nothing
 		fi
+
+		if [ -n $USER_EMAIL ] && [ -n $USER_PASSWORD ]; then
+			echo "User details exist"
+
+            if [ $MULTI_USER -eq 0 ]; then
+                echo "Multi User disabled"
+                php bin/console user:create $USER_EMAIL $USER_PASSWORD
+            else
+                echo "Multi User enabled"
+                php bin/console user:create $USER_EMAIL $USER_PASSWORD -m
+            fi
+		else
+			echo "User details missing"
+		fi
 	fi
 
 	setfacl -R -m u:www-data:rwX -m u:"$(whoami)":rwX var

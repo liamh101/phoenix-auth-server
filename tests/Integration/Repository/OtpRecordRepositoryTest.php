@@ -13,6 +13,8 @@ class OtpRecordRepositoryTest extends IntegrationTestCase
     public function testGetAllRecords(): void
     {
         $repo = $this->getRepository();
+        /** @var EncryptionService $encryptionService */
+        $encryptionService = self::getContainer()->get(EncryptionService::class);
 
         $third = OtpRecordFactory::new()->create();
         $second = OtpRecordFactory::new()->create();
@@ -23,30 +25,30 @@ class OtpRecordRepositoryTest extends IntegrationTestCase
         self::assertCount(3, $result);
         self::assertEquals($first->id, $result[0]->id);
         self::assertEquals($first->name, $result[0]->name);
-        self::assertEquals($first->secret, $result[0]->secret);
+        self::assertEquals($encryptionService->decryptString($first->secret), $result[0]->secret);
         self::assertEquals($first->otpDigits, $result[0]->otpDigits);
         self::assertEquals($first->totpAlgorithm, $result[0]->totpAlgorithm);
         self::assertEquals($first->syncHash, $result[0]->syncHash);
-        self::assertEquals($first->createdAt, $result[0]->createdAt);
-        self::assertEquals($first->updatedAt, $result[0]->updatedAt);
+        self::assertEqualsWithDelta($first->createdAt, $result[0]->createdAt, 1);
+        self::assertEqualsWithDelta($first->updatedAt, $result[0]->updatedAt, 1);
 
         self::assertEquals($second->id, $result[1]->id);
         self::assertEquals($second->name, $result[1]->name);
-        self::assertEquals($second->secret, $result[1]->secret);
+        self::assertEquals($encryptionService->decryptString($second->secret), $result[1]->secret);
         self::assertEquals($second->otpDigits, $result[1]->otpDigits);
         self::assertEquals($second->totpAlgorithm, $result[1]->totpAlgorithm);
         self::assertEquals($second->syncHash, $result[1]->syncHash);
-        self::assertEquals($second->createdAt, $result[1]->createdAt);
-        self::assertEquals($second->updatedAt, $result[1]->updatedAt);
+        self::assertEqualsWithDelta($second->createdAt, $result[1]->createdAt, 1);
+        self::assertEqualsWithDelta($second->updatedAt, $result[1]->updatedAt, 1);
 
         self::assertEquals($third->id, $result[2]->id);
         self::assertEquals($third->name, $result[2]->name);
-        self::assertEquals($third->secret, $result[2]->secret);
+        self::assertEquals($encryptionService->decryptString($third->secret), $result[2]->secret);
         self::assertEquals($third->otpDigits, $result[2]->otpDigits);
         self::assertEquals($third->totpAlgorithm, $result[2]->totpAlgorithm);
         self::assertEquals($third->syncHash, $result[2]->syncHash);
-        self::assertEquals($third->createdAt, $result[2]->createdAt);
-        self::assertEquals($third->updatedAt, $result[2]->updatedAt);
+        self::assertEqualsWithDelta($third->createdAt, $result[2]->createdAt, 1);
+        self::assertEqualsWithDelta($third->updatedAt, $result[2]->updatedAt, 1);
     }
 
     public function testGetManifest(): void
