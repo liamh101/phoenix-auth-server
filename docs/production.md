@@ -81,6 +81,10 @@ Go to `https://your-domain-name.example.com` and enjoy!
 > [!CAUTION]
 > Docker can have a cache layer, make sure you have the right build for each deployment or rebuild your project with --no-cache option to avoid cache issue.
 
+## User Creation
+
+The application requires a 
+
 ## Disabling HTTPS
 
 Alternatively, if you don't want to expose an HTTPS server but only an HTTP one, run the following command:
@@ -90,6 +94,8 @@ SERVER_NAME=:80 \
 APP_SECRET=ChangeMe \
 CADDY_MERCURE_JWT_SECRET=ChangeThisMercureHubJWTSecretKey \
 DATABASE_URL=postgresql://app:!ChangeMe!@127.0.0.1:5432/app?serverVersion=16&charset=utf8 \
+USER_EMAIL=change@me.com
+USER_PASSWORD=!ChangeMe!
 docker compose -f compose.yaml -f compose.prod.yaml up -d --wait
 ```
 
