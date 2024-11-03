@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Enum\Digit;
 use App\Enum\Step;
+use Doctrine\ORM\Mapping\JoinColumn;
+use Doctrine\ORM\Mapping\ManyToOne;
 use Symfony\Component\Validator\Constraints as Assert;
 use App\Enum\Algorithm;
 use App\Repository\OtpRecordRepository;
@@ -51,6 +53,10 @@ class OtpRecord
 
     #[ORM\Column(length: 128)]
     public string $syncHash;
+
+    #[ManyToOne(targetEntity: User::class, inversedBy: 'records')]
+    #[JoinColumn(name: 'user_id', referencedColumnName: 'id', nullable: false)]
+    public ?User $user;
 
     #[ORM\Column]
     public \DateTimeImmutable $createdAt;
