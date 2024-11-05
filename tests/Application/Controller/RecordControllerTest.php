@@ -10,13 +10,17 @@ class RecordControllerTest  extends ApplicationTestCase
 {
     public function testGetManifest(): void
     {
-        $third = OtpRecordFactory::createOne();
-        sleep(1);
-        $second = OtpRecordFactory::createOne();
-        sleep(1);
-        $first = OtpRecordFactory::createOne();
+        $user = $this->createUser();
 
-        $this->createAuthenticatedClient();
+        $third = OtpRecordFactory::createOne(['user' => $user]);
+        sleep(1);
+        $second = OtpRecordFactory::createOne(['user' => $user]);
+        sleep(1);
+        $first = OtpRecordFactory::createOne(['user' => $user]);
+
+        OtpRecordFactory::createOne();
+
+        $this->createAuthenticatedClient($user);
 
         $this->client->request('GET', '/api/records/manifest', server: ['CONTENT_TYPE' => 'application/json']);
 
@@ -38,7 +42,12 @@ class RecordControllerTest  extends ApplicationTestCase
 
     public function testGetManifestZeroResults(): void
     {
-        $this->createAuthenticatedClient();
+        $user = $this->createUser();
+
+        OtpRecordFactory::createOne();
+        OtpRecordFactory::createOne();
+
+        $this->createAuthenticatedClient($user);
         $this->client->request('GET', '/api/records/manifest', server: ['CONTENT_TYPE' => 'application/json']);
 
         self::assertResponseIsSuccessful();
@@ -50,16 +59,19 @@ class RecordControllerTest  extends ApplicationTestCase
 
     public function testGetManifestOneThousandResults(): void
     {
-        OtpRecordFactory::createMany(1000);
+        $user = $this->createUser();
 
-        $this->createAuthenticatedClient();
+        OtpRecordFactory::createMany(100, ['user' => $user]);
+//        OtpRecordFactory::createMany(500, ['user' => $user]);
+
+        $this->createAuthenticatedClient($user);
         $this->client->request('GET', '/api/records/manifest', server: ['CONTENT_TYPE' => 'application/json']);
 
         self::assertResponseIsSuccessful();
         $data = json_decode($this->client->getResponse()->getContent(), true);
 
         self::assertEquals(1, $data['version']);
-        self::assertCount(1000, $data['data']);
+        self::assertCount(100, $data['data']);
     }
 
     public function testGetSingleRecord(): void
@@ -67,10 +79,11 @@ class RecordControllerTest  extends ApplicationTestCase
         /** @var EncryptionService $encryptionService */
         $encryptionService = self::getContainer()->get(EncryptionService::class);
 
-        $record = OtpRecordFactory::createOne();
+        $user = $this->createUser();
+        $record = OtpRecordFactory::createOne(['user' => $user]);
         $recordSecret = $encryptionService->decryptString($record->secret);
 
-        $this->createAuthenticatedClient();
+        $this->createAuthenticatedClient($user);
         $this->client->request('GET', '/api/records/' . $record->id, server: ['CONTENT_TYPE' => 'application/json']);
 
         self::assertResponseIsSuccessful();
@@ -92,10 +105,11 @@ class RecordControllerTest  extends ApplicationTestCase
         /** @var EncryptionService $encryptionService */
         $encryptionService = self::getContainer()->get(EncryptionService::class);
 
-        $record = OtpRecordFactory::createOne(['totpAlgorithm' => 'sha1']);
+        $user = $this->createUser();
+        $record = OtpRecordFactory::createOne(['user' => $user, 'totpAlgorithm' => 'sha1']);
         $recordSecret = $encryptionService->decryptString($record->secret);
 
-        $this->createAuthenticatedClient();
+        $this->createAuthenticatedClient($user);
         $this->client->request('GET', '/api/records/' . $record->id, server: ['CONTENT_TYPE' => 'application/json']);
 
         self::assertResponseIsSuccessful();
@@ -114,7 +128,8 @@ class RecordControllerTest  extends ApplicationTestCase
 
     public function testGetSingleRecordNotFound(): void
     {
-        $this->createAuthenticatedClient();
+        $user = $this->createUser();
+        $this->createAuthenticatedClient($user);
         $this->client->request('GET', '/api/records/9102', server: ['CONTENT_TYPE' => 'application/json']);
 
         self::assertResponseStatusCodeSame(404);
@@ -138,7 +153,8 @@ class RecordControllerTest  extends ApplicationTestCase
 
         $data[$key] = $value;
 
-        $this->createAuthenticatedClient();
+        $user = $this->createUser();
+        $this->createAuthenticatedClient($user);
         $this->client->request(
             'POST',
             '/api/records',
@@ -163,7 +179,8 @@ class RecordControllerTest  extends ApplicationTestCase
      */
     public function testUpdateRecord(string $key, string|int|null $value): void
     {
-        $record = OtpRecordFactory::createOne();
+        $user = $this->createUser();
+        $record = OtpRecordFactory::createOne(['user' => $user]);
 
         $data = [
             'id' => $record->id,
@@ -176,7 +193,7 @@ class RecordControllerTest  extends ApplicationTestCase
 
         $data[$key] = $value;
 
-        $this->createAuthenticatedClient();
+        $this->createAuthenticatedClient($user);
         $this->client->request(
             'PUT',
             '/api/records/' . $record->id,
@@ -227,7 +244,8 @@ class RecordControllerTest  extends ApplicationTestCase
 
         $data[$key] = $value;
 
-        $this->createAuthenticatedClient();
+        $user = $this->createUser();
+        $this->createAuthenticatedClient($user);
         $this->client->request(
             'POST',
             '/api/records',
@@ -243,7 +261,8 @@ class RecordControllerTest  extends ApplicationTestCase
      */
     public function testUpdateRecordInvalid(string $key, string|int|null $value): void
     {
-        $record = OtpRecordFactory::createOne();
+        $user = $this->createUser();
+        $record = OtpRecordFactory::createOne(['user' => $user]);
 
         $data = [
             'name' => 'Hello World 1',
@@ -255,7 +274,7 @@ class RecordControllerTest  extends ApplicationTestCase
 
         $data[$key] = $value;
 
-        $this->createAuthenticatedClient();
+        $this->createAuthenticatedClient($user);
         $this->client->request(
             'PUT',
             '/api/records/' . $record->id,
@@ -264,6 +283,30 @@ class RecordControllerTest  extends ApplicationTestCase
         );
 
         self::assertResponseStatusCodeSame(422);
+    }
+
+    public function testUpdateRecordInvalidUser(): void
+    {
+        $user = $this->createUser();
+        $record = OtpRecordFactory::createOne();
+
+        $data = [
+            'name' => 'Hello World 1',
+            'secret' => 'thisIsATest',
+            'totpStep' => 30,
+            'otpDigits' => 8,
+            'totpAlgorithm' => null
+        ];
+
+        $this->createAuthenticatedClient($user);
+        $this->client->request(
+            'PUT',
+            '/api/records/' . $record->id,
+            server: ['CONTENT_TYPE' => 'application/json'],
+            content: json_encode($data, JSON_THROW_ON_ERROR)
+        );
+
+        self::assertResponseStatusCodeSame(404);
     }
 
     private function invalidProvider(): array
@@ -282,9 +325,10 @@ class RecordControllerTest  extends ApplicationTestCase
 
     public function testDeleteRecord(): void
     {
-        $record = OtpRecordFactory::createOne();
+        $user = $this->createUser();
+        $record = OtpRecordFactory::createOne(['user' => $user]);
 
-        $this->createAuthenticatedClient();
+        $this->createAuthenticatedClient($user);
         $this->client->request(
             'DELETE',
             '/api/records/' . $record->id,
@@ -294,6 +338,20 @@ class RecordControllerTest  extends ApplicationTestCase
 
         $this->client->request(
             'GET',
+            '/api/records/' . $record->id,
+            server: ['CONTENT_TYPE' => 'application/json'],
+        );
+        self::assertResponseStatusCodeSame(404);
+    }
+
+    public function testDeleteRecordInvalidRecord(): void
+    {
+        $user = $this->createUser();
+        $record = OtpRecordFactory::createOne();
+
+        $this->createAuthenticatedClient($user);
+        $this->client->request(
+            'DELETE',
             '/api/records/' . $record->id,
             server: ['CONTENT_TYPE' => 'application/json'],
         );

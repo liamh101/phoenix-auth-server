@@ -23,12 +23,11 @@ class ApplicationTestCase extends WebTestCase
     protected function createUser(): User
     {
         // password
-        return UserFactory::createOne(['email' => 'test@test.com', 'password' => '$2y$04$Lr.wEaRw9FNZ6RiPk9nGqOlhJCY49BUn55UlEK0r3Xh4DxgGhctC2'])->_real();
+        return UserFactory::createOne(['password' => '$2y$04$Lr.wEaRw9FNZ6RiPk9nGqOlhJCY49BUn55UlEK0r3Xh4DxgGhctC2'])->_real();
     }
 
-    protected function createAuthenticatedClient(): KernelBrowser
+    protected function createAuthenticatedClient(User $authenticationUser): KernelBrowser
     {
-        $this->createUser();
         $this->client->request(
             'POST',
             '/api/login_check',
@@ -36,7 +35,7 @@ class ApplicationTestCase extends WebTestCase
             [],
             ['CONTENT_TYPE' => 'application/json'],
             json_encode([
-                'username' => 'test@test.com',
+                'username' => $authenticationUser->getEmail(),
                 'password' => 'password',
             ],
                 JSON_THROW_ON_ERROR)

@@ -26,7 +26,7 @@ class RecordController extends AbstractController
     #[Route('/{id}', name: 'fetch', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function fetch(int $id): Response
     {
-        $record = $this->recordRepository->find($id);
+        $record = $this->recordRepository->getSingleRecord($id);
 
         if (!$record instanceof OtpRecord) {
             return $this->json(new ErrorResponse(ErrorResponse::generateNotFoundErrorMessage(OtpRecord::class)), 404);
@@ -72,7 +72,7 @@ class RecordController extends AbstractController
         int $id,
         #[MapRequestPayload] OtpRecord $record
     ): Response {
-        $existingRecord = $this->recordRepository->find($id);
+        $existingRecord = $this->recordRepository->getSingleRecord($id);
 
         if (!$existingRecord instanceof OtpRecord) {
             return $this->json(new ErrorResponse(ErrorResponse::generateNotFoundErrorMessage(OtpRecord::class)), 404);
@@ -102,7 +102,7 @@ class RecordController extends AbstractController
     #[Route('/{id}', name: 'delete', requirements: ['id' => '\d+'], methods: ['DELETE'])]
     public function delete(int $id): Response
     {
-        $existingRecord = $this->recordRepository->find($id);
+        $existingRecord = $this->recordRepository->getSingleRecord($id);
 
         if (!$existingRecord instanceof OtpRecord) {
             return $this->json(
