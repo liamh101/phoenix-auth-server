@@ -2,23 +2,31 @@
 
 namespace App\Tests\Integration\Repository;
 
+use App\Entity\User;
 use App\Factory\OtpRecordFactory;
+use App\Factory\UserFactory;
 use App\Repository\OtpRecordRepository;
 use App\Service\EncryptionService;
+use App\Service\UserService;
 use App\Tests\Integration\IntegrationTestCase;
+use Symfony\Bundle\SecurityBundle\Security;
 
 class OtpRecordRepositoryTest extends IntegrationTestCase
 {
 
     public function testGetAllRecords(): void
     {
-        $repo = $this->getRepository();
+        $authUser = UserFactory::createOne();
+
+        $repo = $this->getRepository($authUser->_real());
         /** @var EncryptionService $encryptionService */
         $encryptionService = self::getContainer()->get(EncryptionService::class);
 
-        $third = OtpRecordFactory::new()->create();
-        $second = OtpRecordFactory::new()->create();
-        $first = OtpRecordFactory::new()->create();
+        $third = OtpRecordFactory::new(['user' => $authUser])->create();
+        $second = OtpRecordFactory::new(['user' => $authUser])->create();
+        $first = OtpRecordFactory::new(['user' => $authUser])->create();
+
+        OtpRecordFactory::new()->create();
 
         $result = $repo->getAll();
 
@@ -53,11 +61,15 @@ class OtpRecordRepositoryTest extends IntegrationTestCase
 
     public function testGetManifest(): void
     {
-        $repo = $this->getRepository();
+        $authUser = UserFactory::createOne();
 
-        $first = OtpRecordFactory::createOne();
-        $second = OtpRecordFactory::createOne();
-        $third = OtpRecordFactory::createOne();
+        $repo = $this->getRepository($authUser->_real());
+
+        $first = OtpRecordFactory::createOne(['user' => $authUser]);
+        $second = OtpRecordFactory::createOne(['user' => $authUser]);
+        $third = OtpRecordFactory::createOne(['user' => $authUser]);
+
+        OtpRecordFactory::createOne();
 
         $result = $repo->getAccountManifest();
 
@@ -75,9 +87,11 @@ class OtpRecordRepositoryTest extends IntegrationTestCase
 
     public function testGetSingleHashFound(): void
     {
-        $repo = $this->getRepository();
+        $authUser = UserFactory::createOne();
 
-        $record = OtpRecordFactory::createOne();
+        $repo = $this->getRepository($authUser->_real());
+
+        $record = OtpRecordFactory::createOne(['user' => $authUser]);
         OtpRecordFactory::createOne();
 
         $result = $repo->getSingleAccountHash($record->id);
@@ -88,10 +102,25 @@ class OtpRecordRepositoryTest extends IntegrationTestCase
         self::assertEqualsWithDelta($record->updatedAt, $result->updatedAt, 1);
     }
 
+    public function testGetSingleHashInvalidUser(): void
+    {
+        $authUser = UserFactory::createOne();
+
+        $repo = $this->getRepository($authUser->_real());
+
+        $record = OtpRecordFactory::createOne();
+        OtpRecordFactory::createOne(['user' => $authUser]);
+
+        $result = $repo->getSingleAccountHash($record->id);
+
+        self::assertNull($result);
+    }
+
     public function testGetSingleHashMissing(): void
     {
-        $repo = $this->getRepository();
-        OtpRecordFactory::createOne();
+        $authUser = UserFactory::createOne();
+        $repo = $this->getRepository($authUser->_real());
+        OtpRecordFactory::createOne(['user' => $authUser]);
 
         $result = $repo->getSingleAccountHash(4444);
 
@@ -100,10 +129,11 @@ class OtpRecordRepositoryTest extends IntegrationTestCase
 
     public function testFindExistingAccountHashExisting(): void
     {
-        $repo = $this->getRepository();
+        $authUser = UserFactory::createOne();
+        $repo = $this->getRepository($authUser->_real());
 
-        $record = OtpRecordFactory::createOne();
-        OtpRecordFactory::createOne();
+        $record = OtpRecordFactory::createOne(['user' => $authUser]);
+        OtpRecordFactory::createOne(['user' => $authUser]);
 
         $result = $repo->findExistingAccountHash($record->syncHash);
 
@@ -113,10 +143,23 @@ class OtpRecordRepositoryTest extends IntegrationTestCase
         self::assertEqualsWithDelta($record->updatedAt, $result->updatedAt, 1);
     }
 
+    public function testFindExistingAccountHashInvalidUser(): void
+    {
+        $authUser = UserFactory::createOne();
+        $repo = $this->getRepository($authUser->_real());
+
+        $record = OtpRecordFactory::createOne();
+        $result = $repo->findExistingAccountHash($record->syncHash);
+
+        self::assertNull($result);
+    }
+
+
     public function testFindExistingAccountHashMissing(): void
     {
-        $repo = $this->getRepository();
-        OtpRecordFactory::createOne();
+        $authUser = UserFactory::createOne();
+        $repo = $this->getRepository($authUser->_real());
+        OtpRecordFactory::createOne(['user' => $authUser]);
 
         $result = $repo->findExistingAccountHash('HelloWorld');
 
@@ -125,13 +168,15 @@ class OtpRecordRepositoryTest extends IntegrationTestCase
 
     public function testFindValid(): void
     {
-        $repo = $this->getRepository();
+        $authUser = UserFactory::createOne();
+        $repo = $this->getRepository($authUser->_real());
+
         /** @var EncryptionService $encryptionService */
         $encryptionService = self::getContainer()->get(EncryptionService::class);
-        $record = OtpRecordFactory::createOne();
-        OtpRecordFactory::createOne();
+        $record = OtpRecordFactory::createOne(['user' => $authUser]);
+        OtpRecordFactory::createOne(['user' => $authUser]);
 
-        $result = $repo->find($record->id);
+        $result = $repo->getSingleRecord($record->id);
 
         self::assertNotNull($result);
         self::assertEquals($record->id, $result->id);
@@ -144,18 +189,36 @@ class OtpRecordRepositoryTest extends IntegrationTestCase
         self::assertEqualsWithDelta($record->updatedAt, $result->updatedAt, 1);
     }
 
-    public function testFindMissing(): void
+    public function testFindInvalidUser(): void
     {
-        $repo = $this->getRepository();
-        OtpRecordFactory::createOne();
+        $authUser = UserFactory::createOne();
+        $repo = $this->getRepository($authUser->_real());
+        $record = OtpRecordFactory::createOne();
 
-        $result = $repo->find(1234);
+        $result = $repo->getSingleRecord($record->id);
 
         self::assertNull($result);
     }
 
-    private function getRepository(): OtpRecordRepository
+    public function testFindMissing(): void
     {
+        $authUser = UserFactory::createOne();
+        $repo = $this->getRepository($authUser->_real());
+        OtpRecordFactory::createOne(['user' => $authUser]);
+
+        $result = $repo->getSingleRecord(1234);
+
+        self::assertNull($result);
+    }
+
+    private function getRepository(User $authenticatedUser): OtpRecordRepository
+    {
+        $security = $this->createMock(Security::class);
+        $security->method('getUser')
+            ->willReturn($authenticatedUser);
+
+        self::getContainer()->set(Security::class, $security);
+
         return self::getContainer()->get(OtpRecordRepository::class);
     }
 }

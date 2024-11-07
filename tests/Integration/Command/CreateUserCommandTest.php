@@ -63,7 +63,6 @@ class CreateUserCommandTest extends IntegrationTestCase
         $command->execute([
             'email' => 'testMutliUsersTwo@test.com',
             'password' => 'password',
-            '--multi-user' => true,
         ]);
 
         $command->assertCommandIsSuccessful();
@@ -88,6 +87,7 @@ class CreateUserCommandTest extends IntegrationTestCase
         $command->execute([
             'email' => 'testMutliUsersTwo@test.com',
             'password' => 'password',
+            '--remove-previous' => true,
         ]);
 
         $command->assertCommandIsSuccessful();

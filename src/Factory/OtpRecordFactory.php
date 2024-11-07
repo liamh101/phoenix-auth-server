@@ -3,6 +3,7 @@
 namespace App\Factory;
 
 use App\Entity\OtpRecord;
+use Zenstruck\Foundry\LazyValue;
 use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
 
 /**
@@ -18,7 +19,6 @@ final class OtpRecordFactory extends PersistentProxyObjectFactory
     /**
      * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#model-factories
      *
-     * @todo add your default values here
      */
     protected function defaults(): array|callable
     {
@@ -30,6 +30,7 @@ final class OtpRecordFactory extends PersistentProxyObjectFactory
             'totpStep' => self::faker()->randomNumber(),
             'createdAt' => \DateTimeImmutable::createFromMutable(self::faker()->dateTime()),
             'updatedAt' => self::faker()->dateTime(),
+            'user' => UserFactory::new(),
         ];
     }
 

@@ -3,9 +3,11 @@
 namespace App\Repository;
 
 use App\Entity\OtpRecord;
+use App\Service\UserService;
 use App\ValueObject\RepoResponse\OtpRecord\AccountHash;
 use App\ValueObject\RepoResponse\OtpRecord\AccountManifest;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\DBAL\LockMode;
 use Doctrine\ORM\NoResultException;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -14,9 +16,25 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class OtpRecordRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
-    {
+    public function __construct(
+        ManagerRegistry $registry,
+        private UserService $userService,
+    ) {
         parent::__construct($registry, OtpRecord::class);
+    }
+
+    public function getSingleRecord(int $id): ?OtpRecord
+    {
+        /** @var OtpRecord $result */
+        $result = $this->createQueryBuilder('o')
+            ->where('o.id = :id')
+            ->andWhere('o.user = :user')
+            ->setParameter('id', $id)
+            ->setParameter('user', $this->userService->getCurrentUser()->getId())
+            ->getQuery()
+            ->getOneOrNullResult();
+
+        return $result;
     }
 
     /**
@@ -26,7 +44,9 @@ class OtpRecordRepository extends ServiceEntityRepository
     {
         /** @var OtpRecord[] $result */
         $result = $this->createQueryBuilder('o')
+            ->where('o.user = :user')
             ->orderBy('o.id', 'DESC')
+            ->setParameter('user', $this->userService->getCurrentUser()->getId())
             ->getQuery()
             ->getResult();
 
@@ -42,7 +62,9 @@ class OtpRecordRepository extends ServiceEntityRepository
         /** @var array<int, array<string, int|\DateTimeInterface>> $result */
         $result = $this->createQueryBuilder('o')
             ->select('o.id', 'o.updatedAt')
+            ->where('o.user = :user')
             ->orderBy('o.updatedAt', 'DESC')
+            ->setParameter('user', $this->userService->getCurrentUser()->getId())
             ->getQuery()
             ->getResult();
 
@@ -56,7 +78,9 @@ class OtpRecordRepository extends ServiceEntityRepository
             $record =  $this->createQueryBuilder('o')
                 ->select('o.id', 'o.syncHash', 'o.updatedAt')
                 ->where('o.id = :id')
+                ->andWhere('o.user = :user')
                 ->setParameter('id', $id)
+                ->setParameter('user', $this->userService->getCurrentUser()->getId())
                 ->getQuery()
                 ->getSingleResult();
 
@@ -81,7 +105,9 @@ class OtpRecordRepository extends ServiceEntityRepository
             $record = $this->createQueryBuilder('o')
                 ->select('o.id', 'o.syncHash', 'o.updatedAt')
                 ->where('o.syncHash = :hash')
+                ->andWhere('o.user = :user')
                 ->setParameter('hash', $hash)
+                ->setParameter('user', $this->userService->getCurrentUser()->getId())
                 ->getQuery()
                 ->getSingleResult();
 
@@ -115,6 +141,22 @@ class OtpRecordRepository extends ServiceEntityRepository
         if ($flush) {
             $this->getEntityManager()->flush();
         }
+    }
+
+    /**
+     * @deprecated Security bypass for users. Use getSingleRecord instead
+     */
+    public function find(mixed $id, int|LockMode|null $lockMode = null, ?int $lockVersion = null): object|null
+    {
+        return parent::find($id, $lockMode, $lockVersion);
+    }
+
+    /**
+     * @deprecated Security bypass for users. Use getAll instead
+     */
+    public function findAll(): array
+    {
+        return parent::findAll();
     }
 
     //    /**

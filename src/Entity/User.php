@@ -3,7 +3,10 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\OneToMany;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -28,6 +31,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column]
     private ?string $password = null;
+
+    /**
+     * @var Collection<int,OtpRecord>
+     */
+    #[OneToMany(targetEntity: OtpRecord::class, mappedBy: 'user', cascade: ['remove'])]
+    public Collection $records;
+
+    public function __construct()
+    {
+        $this->records = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
