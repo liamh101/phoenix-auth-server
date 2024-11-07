@@ -31,7 +31,7 @@ class CreateUserCommand extends Command
         $this
             ->addArgument('email', InputArgument::REQUIRED, 'Email for User')
             ->addArgument('password', InputArgument::REQUIRED, 'User Password')
-            ->addOption('multi-user', 'm', null, 'If enabled other users won\'t be removed')
+            ->addOption('remove-previous', 'r', null, 'Remove Previous Users')
         ;
     }
 
@@ -41,7 +41,7 @@ class CreateUserCommand extends Command
 
         $email = $input->getArgument('email');
         $password = $input->getArgument('password');
-        $multiUser = $input->getOption('multi-user');
+        $removePrevious = $input->getOption('remove-previous');
 
         if (!is_string($email) || !is_string($password)) {
             $io->error('Email and password are required.');
@@ -65,7 +65,7 @@ class CreateUserCommand extends Command
 
         $this->userRepository->save($user);
 
-        if (!$multiUser) {
+        if ($removePrevious) {
             $this->userRepository->deleteOtherUsers($user);
         }
 
