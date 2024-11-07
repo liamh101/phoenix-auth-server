@@ -6,8 +6,8 @@ use App\Entity\OtpRecord;
 use App\Exception\UserException;
 use App\Service\UserService;
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsEntityListener;
+use Doctrine\ORM\Event\PrePersistEventArgs;
 use Doctrine\ORM\Events;
-use Doctrine\Persistence\Event\LifecycleEventArgs;
 
 #[AsEntityListener(event: Events::prePersist, method: 'prePersist', entity: OtpRecord::class)]
 readonly class UserAttachment
@@ -20,7 +20,7 @@ readonly class UserAttachment
     /**
      * @throws UserException
      */
-    public function prePersist(OtpRecord $record, LifecycleEventArgs $args): void
+    public function prePersist(OtpRecord $record, PrePersistEventArgs $args): void
     {
         if (isset($record->user)) {
             return;
@@ -28,5 +28,4 @@ readonly class UserAttachment
 
         $this->userService->attachCurrentUserToOtpRecord($record);
     }
-
 }

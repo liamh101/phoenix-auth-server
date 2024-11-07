@@ -32,6 +32,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?string $password = null;
 
+    /**
+     * @var Collection<int,OtpRecord>
+     */
     #[OneToMany(targetEntity: OtpRecord::class, mappedBy: 'user', cascade: ['remove'])]
     public Collection $records;
 

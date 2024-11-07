@@ -9,7 +9,6 @@ use Symfony\Bundle\SecurityBundle\Security;
 
 readonly class UserService
 {
-
     public function __construct(
         private Security $security,
     ) {
