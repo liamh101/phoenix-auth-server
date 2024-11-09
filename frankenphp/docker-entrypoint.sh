@@ -53,15 +53,8 @@ if [ "$1" = 'frankenphp' ] || [ "$1" = 'php' ] || [ "$1" = 'bin/console' ]; then
 		fi
 
 		if [ -n $USER_EMAIL ] && [ -n $USER_PASSWORD ]; then
-			echo "User details exist"
-
-            if [ $MULTI_USER -eq 0 ]; then
-                echo "Multi User disabled"
-                php bin/console user:create $USER_EMAIL $USER_PASSWORD
-            else
-                echo "Multi User enabled"
-                php bin/console user:create $USER_EMAIL $USER_PASSWORD -m
-            fi
+			echo "User details found"
+            php bin/console user:create $USER_EMAIL $USER_PASSWORD
 		else
 			echo "User details missing"
 		fi

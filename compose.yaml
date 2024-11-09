@@ -13,9 +13,8 @@ services:
       MERCURE_URL: ${CADDY_MERCURE_URL:-http://php/.well-known/mercure}
       MERCURE_PUBLIC_URL: ${CADDY_MERCURE_PUBLIC_URL:-https://${SERVER_NAME:-localhost}/.well-known/mercure}
       MERCURE_JWT_SECRET: ${CADDY_MERCURE_JWT_SECRET:-!ChangeThisMercureHubJWTSecretKey!}
-      USER_EMAIL: admin1@test.com
-      USER_PASSWORD: Password
-      MULTI_USER: 0
+      USER_EMAIL: admin@ChangeMe.com
+      USER_PASSWORD: ChangeMe
     volumes:
       - caddy_data:/data
       - caddy_config:/config

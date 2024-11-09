@@ -13,7 +13,7 @@ A syncing server for the [Phoenix Auth Desktop Application](https://github.com/l
 ## Docs
 
 1. [Deploying in production](docs/production.md)
-2. [User Creation](docs/user.md)
+2. [Users](docs/user.md)
 2. [Options available](docs/options.md)
 3. [Debugging with Xdebug](docs/xdebug.md)
 4. [TLS Certificates](docs/tls.md)
