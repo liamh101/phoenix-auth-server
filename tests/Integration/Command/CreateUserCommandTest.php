@@ -3,6 +3,8 @@
 namespace App\Tests\Integration\Command;
 
 use App\Command\CreateUserCommand;
+use App\Entity\OtpRecord;
+use App\Factory\OtpRecordFactory;
 use App\Factory\UserFactory;
 use App\Repository\UserRepository;
 use App\Tests\Integration\IntegrationTestCase;
@@ -82,6 +84,7 @@ class CreateUserCommandTest extends IntegrationTestCase
     public function testRemoveOtherUsers(): void
     {
         $existingUser = UserFactory::createOne(['email' => 'testMutliUsers@test.com']);
+        OtpRecordFactory::createOne(['user' => $existingUser]);
 
         $command = $this->getCommand();
         $command->execute([

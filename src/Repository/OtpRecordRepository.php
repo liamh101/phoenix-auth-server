@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\OtpRecord;
+use App\Entity\User;
 use App\Service\UserService;
 use App\ValueObject\RepoResponse\OtpRecord\AccountHash;
 use App\ValueObject\RepoResponse\OtpRecord\AccountManifest;
@@ -141,6 +142,18 @@ class OtpRecordRepository extends ServiceEntityRepository
         if ($flush) {
             $this->getEntityManager()->flush();
         }
+    }
+
+    public function deleteAllRecordsRelatingToUser(User $user): true
+    {
+        $this->createQueryBuilder('r')
+            ->andWhere('r.user != :id')
+            ->setParameter('id', $user->getId())
+            ->delete(OtpRecord::class, 'r')
+            ->getQuery()
+            ->execute();
+
+        return true;
     }
 
     /**
