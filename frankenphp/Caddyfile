@@ -6,7 +6,7 @@
 	}
 
 	# https://caddyserver.com/docs/caddyfile/directives#sorting-algorithm
-	order mercure after encode
+	# order mercure after encode
 	order vulcain after reverse_proxy
 	order php_server before file_server
 }
@@ -29,20 +29,20 @@
 	root * /app/public
 	encode zstd br gzip
 
-	mercure {
+	#mercure {
 		# Transport to use (default to Bolt)
-		transport_url {$MERCURE_TRANSPORT_URL:bolt:///data/mercure.db}
+	#	transport_url {$MERCURE_TRANSPORT_URL:bolt:///data/mercure.db}
 		# Publisher JWT key
-		publisher_jwt {env.MERCURE_PUBLISHER_JWT_KEY} {env.MERCURE_PUBLISHER_JWT_ALG}
+	#	publisher_jwt {env.MERCURE_PUBLISHER_JWT_KEY} {env.MERCURE_PUBLISHER_JWT_ALG}
 		# Subscriber JWT key
-		subscriber_jwt {env.MERCURE_SUBSCRIBER_JWT_KEY} {env.MERCURE_SUBSCRIBER_JWT_ALG}
+	#	subscriber_jwt {env.MERCURE_SUBSCRIBER_JWT_KEY} {env.MERCURE_SUBSCRIBER_JWT_ALG}
 		# Allow anonymous subscribers (double-check that it's what you want)
-		anonymous
+	#	anonymous
 		# Enable the subscription API (double-check that it's what you want)
-		subscriptions
+	#	subscriptions
 		# Extra directives
-		{$MERCURE_EXTRA_DIRECTIVES}
-	}
+	#	{$MERCURE_EXTRA_DIRECTIVES}
+	#}
 
 	vulcain
 
