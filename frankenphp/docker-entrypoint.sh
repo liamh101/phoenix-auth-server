@@ -58,6 +58,10 @@ if [ "$1" = 'frankenphp' ] || [ "$1" = 'php' ] || [ "$1" = 'bin/console' ]; then
 		else
 			echo "User details missing"
 		fi
+
+		if [ -z "$(find ./config/jwt -iname 'public.pem' -print -quit)" ] && [ -n $JWT_PASSPHRASE]; then
+    		 php bin/console lexik:jwt:generate-keypair
+    	fi
 	fi
 
 	setfacl -R -m u:www-data:rwX -m u:"$(whoami)":rwX var
