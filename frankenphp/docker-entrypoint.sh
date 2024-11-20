@@ -59,8 +59,16 @@ if [ "$1" = 'frankenphp' ] || [ "$1" = 'php' ] || [ "$1" = 'bin/console' ]; then
 			echo "User details missing"
 		fi
 
-		if [ -z "$(find ./config/jwt -iname 'public.pem' -print -quit)" ] && [ -n $JWT_PASSPHRASE]; then
-    		 php bin/console lexik:jwt:generate-keypair
+		if [ -z "$(find ./config/jwt -iname 'public.pem' -print -quit)" ]; then
+			if [ -z $JWT_PASSPHRASE]; then
+				echo "Generating Passphrase"
+
+				NEW_PASSPHRASE=$(cat /dev/urandom | tr -dc 'a-z0-9' | fold -w 64 | head -n 1)
+				echo "JWT_PASSPHRASE=$NEW_PASSPHRASE\n" >> .env
+			fi
+
+			echo "Generating Keypair"
+    		php bin/console lexik:jwt:generate-keypair
     	fi
 	fi
 
