@@ -18,8 +18,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     public function __construct(
         private readonly OtpRecordRepository $otpRecordRepository,
         ManagerRegistry $registry
-    )
-    {
+    ) {
         parent::__construct($registry, User::class);
     }
 
