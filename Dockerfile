@@ -1,7 +1,7 @@
 #syntax=docker/dockerfile:1.4
 
 # Versions
-FROM dunglas/frankenphp:1-php8.3 AS frankenphp_upstream
+FROM dunglas/frankenphp:1-php8.3 AS phoenix_upstream
 
 # The different stages of this Dockerfile are meant to be built into separate images
 # https://docs.docker.com/develop/develop-images/multistage-build/#stop-at-a-specific-build-stage
@@ -9,7 +9,7 @@ FROM dunglas/frankenphp:1-php8.3 AS frankenphp_upstream
 
 
 # Base FrankenPHP image
-FROM frankenphp_upstream AS frankenphp_base
+FROM phoenix_upstream AS phoenix_base
 
 WORKDIR /app
 
@@ -52,7 +52,7 @@ HEALTHCHECK --start-period=60s CMD curl -f http://localhost:2019/metrics || exit
 CMD [ "frankenphp", "run", "--config", "/etc/caddy/Caddyfile" ]
 
 # Dev FrankenPHP image
-FROM frankenphp_base AS frankenphp_dev
+FROM phoenix_base AS phoenix_dev
 
 ENV APP_ENV=dev XDEBUG_MODE=off
 
@@ -68,7 +68,7 @@ COPY --link frankenphp/conf.d/app.dev.ini $PHP_INI_DIR/conf.d/
 CMD [ "frankenphp", "run", "--config", "/etc/caddy/Caddyfile", "--watch" ]
 
 # Prod FrankenPHP image
-FROM frankenphp_base AS frankenphp_prod
+FROM phoenix_base AS phoenix_prod
 
 ENV APP_ENV=prod
 ENV FRANKENPHP_CONFIG="import worker.Caddyfile"

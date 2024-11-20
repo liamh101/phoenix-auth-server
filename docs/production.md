@@ -1,7 +1,13 @@
+# Using a Prebuilt Docker Image
+
+Phoenix provides prebuilt docker images without the need to clone the source code. Follow the instructions on within the [docker hub repository.](https://hub.docker.com/repository/docker/liampiginthecity/phoenix-auth-server/general)
+
+You can also build and deploy your own docker image from the source code by following the tutorial below.
+
 # Deploying in Production
 
-Symfony Docker provides Docker images, and a Docker Compose definition optimized for production usage.
-In this tutorial, we will learn how to deploy our Symfony application on a single server using Docker Compose.
+Phoenix provides Docker images, and a Docker Compose definition optimized for production usage.
+In this tutorial, we will learn how to deploy Phoenix on a single server using Docker Compose.
 
 ## Preparing a Server
 
@@ -15,7 +21,7 @@ This will provision an Ubuntu server with the latest versions of Docker and Dock
 
 For test purposes, the cheapest plans will be enough, even though you might want at least 2GB of RAM to execute Docker Compose for the first time. For real production usage, you'll probably want to pick a plan in the "general purpose" section to fit your needs.
 
-![Deploying a Symfony app on DigitalOcean with Docker Compose](digitalocean-droplet.png)
+![Deploying Phoenix on DigitalOcean with Docker Compose](digitalocean-droplet.png)
 
 You can keep the defaults for other settings, or tweak them according to your needs.
 Don't forget to add your SSH key or create a password then press the "Finalize and create" button.
@@ -43,7 +49,7 @@ Example with the DigitalOcean Domains service ("Networking" > "Domains"):
 ![Configuring DNS on DigitalOcean](digitalocean-dns.png)
 
 > [!NOTE]  
-> Let's Encrypt, the service used by default by Symfony Docker to automatically generate a TLS certificate doesn't support using bare IP addresses. Using a domain name is mandatory to use Let's Encrypt.
+> Let's Encrypt, the service used by default by Phoenix Docker to automatically generate a TLS certificate doesn't support using bare IP addresses. Using a domain name is mandatory to use Let's Encrypt.
 
 ## Deploying
 
@@ -81,9 +87,6 @@ Go to `https://your-domain-name.example.com` and enjoy!
 > [!CAUTION]
 > Docker can have a cache layer, make sure you have the right build for each deployment or rebuild your project with --no-cache option to avoid cache issue.
 
-## User Creation
-
-The application requires a 
 
 ## Disabling HTTPS
 
@@ -103,7 +106,7 @@ docker compose -f compose.yaml -f compose.prod.yaml up -d --wait
 
 If you want to deploy your app on a cluster of machines, you can use [Docker Swarm](https://docs.docker.com/engine/swarm/stack-deploy/),
 which is compatible with the provided Compose files.
-To deploy on Kubernetes, take a look at [the Helm chart provided with API Platform](https://api-platform.com/docs/deployment/kubernetes/), which can be easily adapted for use with Symfony Docker.
+To deploy on Kubernetes, take a look at [the Helm chart provided with API Platform](https://api-platform.com/docs/deployment/kubernetes/), which can be easily adapted for use with Phoenix Docker.
 
 ## Passing local environment variables to containers
 

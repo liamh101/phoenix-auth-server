@@ -14,12 +14,13 @@ A syncing server for the [Phoenix Auth Desktop Application](https://github.com/l
 
 1. [Deploying in production](docs/production.md)
 2. [Users](docs/user.md)
-2. [Options available](docs/options.md)
-3. [Debugging with Xdebug](docs/xdebug.md)
-4. [TLS Certificates](docs/tls.md)
-5. [Using Alpine Linux instead of Debian](docs/alpine.md)
-6. [Using a Makefile](docs/makefile.md)
-7. [Troubleshooting](docs/troubleshooting.md)
+3. [Storing JWT Certs](docs/jwt.md)
+4. [Options available](docs/options.md)
+5. [Debugging with Xdebug](docs/xdebug.md)
+6. [TLS Certificates](docs/tls.md)
+7. [Using Alpine Linux instead of Debian](docs/alpine.md)
+8. [Using a Makefile](docs/makefile.md)
+9. [Troubleshooting](docs/troubleshooting.md)
 
 ## License
 
