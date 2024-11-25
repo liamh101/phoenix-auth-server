@@ -62,7 +62,7 @@ if [ "$1" = 'frankenphp' ] || [ "$1" = 'php' ] || [ "$1" = 'bin/console' ]; then
 		if [ -z $JWT_PASSPHRASE ] || [ -z "$(find ./config/jwt -iname 'public.pem' -print -quit)" ]; then
 			if [ -z $JWT_PASSPHRASE]; then
 
-				if [ -z "$(find ./config/jwt -iname 'public.pem' -print -quit)" ]; then
+				if [ "$(find ./config/jwt -iname 'public.pem' -print -quit)" ]; then
 					rm ./config/jwt/public.pem
 					rm ./config/jwt/private.pem
 				fi
