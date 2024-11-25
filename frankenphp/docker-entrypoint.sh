@@ -51,6 +51,25 @@ if [ "$1" = 'frankenphp' ] || [ "$1" = 'php' ] || [ "$1" = 'bin/console' ]; then
 		if [ "$( find ./migrations -iname '*.php' -print -quit )" ]; then
 			php bin/console doctrine:migrations:migrate --no-interaction --all-or-nothing
 		fi
+
+		if [ -n $USER_EMAIL ] && [ -n $USER_PASSWORD ]; then
+			echo "User details found"
+            php bin/console user:create $USER_EMAIL $USER_PASSWORD
+		else
+			echo "User details missing"
+		fi
+
+		if [ -z "$(find ./config/jwt -iname 'public.pem' -print -quit)" ]; then
+			if [ -z $JWT_PASSPHRASE]; then
+				echo "Generating Passphrase"
+
+				NEW_PASSPHRASE=$(cat /dev/urandom | tr -dc 'a-z0-9' | fold -w 64 | head -n 1)
+				echo "JWT_PASSPHRASE=$NEW_PASSPHRASE\n" >> .env
+			fi
+
+			echo "Generating Keypair"
+    		php bin/console lexik:jwt:generate-keypair
+    	fi
 	fi
 
 	setfacl -R -m u:www-data:rwX -m u:"$(whoami)":rwX var
