@@ -70,7 +70,7 @@ if [ "$1" = 'frankenphp' ] || [ "$1" = 'php' ] || [ "$1" = 'bin/console' ]; then
 				echo "Generating Passphrase"
 
 				NEW_PASSPHRASE=$(cat /dev/urandom | tr -dc 'a-z0-9' | fold -w 64 | head -n 1)
-				echo "JWT_PASSPHRASE=$NEW_PASSPHRASE\n" >> .env.local
+				export JWT_PASSPHRASE=$NEW_PASSPHRASE
 			fi
 
 			echo "Generating Keypair"
