@@ -4,9 +4,9 @@ namespace App\Enum;
 
 enum Algorithm: string
 {
-    case SHA1 = 'sha1';
-    case SHA256 = 'sha256';
-    case SHA512 = 'sha512';
+    case SHA1 = 'SHA1';
+    case SHA256 = 'SHA256';
+    case SHA512 = 'SHA512';
 
     /**
      * @return null[]|string[]

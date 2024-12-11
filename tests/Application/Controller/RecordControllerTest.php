@@ -223,9 +223,9 @@ class RecordControllerTest  extends ApplicationTestCase
             ['otpDigits', 6],
             ['otpDigits', 8],
             ['totpAlgorithm', null],
-            ['totpAlgorithm', 'sha1'],
-            ['totpAlgorithm', 'sha256'],
-            ['totpAlgorithm', 'sha512'],
+            ['totpAlgorithm', 'SHA1'],
+            ['totpAlgorithm', 'SHA256'],
+            ['totpAlgorithm', 'SHA512'],
         ];
     }
 
@@ -319,6 +319,7 @@ class RecordControllerTest  extends ApplicationTestCase
             ['otpDigits', null],
             ['otpDigits', 78],
             ['totpAlgorithm', 'sha12345'],
+            ['totpAlgorithm', 'sha1'],
             ['totpAlgorithm', 123],
         ];
     }
