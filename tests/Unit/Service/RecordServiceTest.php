@@ -100,7 +100,7 @@ class RecordServiceTest extends TestCase
         $newRecord->secret = '12345678';
         $newRecord->totpStep = 60;
         $newRecord->otpDigits = 8;
-        $newRecord->totpAlgorithm = 'sha512';
+        $newRecord->totpAlgorithm = 'SHA512';
 
         $updatedRecord = $service->updateExistingRecord($oldRecord, $newRecord);
 
