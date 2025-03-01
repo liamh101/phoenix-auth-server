@@ -15,6 +15,8 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\HasLifecycleCallbacks]
 class OtpRecord
 {
+    public const string DEFAULT_COLOUR = '5c636a';
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -36,6 +38,14 @@ class OtpRecord
         max: 255,
     )]
     public ?string $secret = null;
+
+    #[ORM\Column(length: 6, options: ['default' => self::DEFAULT_COLOUR])]
+    #[Assert\NotBlank]
+    #[Assert\Length(
+        min: 1,
+        max: 6,
+    )]
+    public ?string $colour = self::DEFAULT_COLOUR;
 
     #[ORM\Column]
     #[Assert\NotBlank]
@@ -86,6 +96,7 @@ class OtpRecord
             'id' => $this->id,
             'name' => $this->name,
             'secret' => $this->secret,
+            'colour' => $this->colour,
             'totpStep' => $this->totpStep,
             'otpDigits' => $this->otpDigits,
             'algorithm' => $this->totpAlgorithm,
