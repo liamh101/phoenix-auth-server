@@ -25,6 +25,7 @@ final class OtpRecordFactory extends PersistentProxyObjectFactory
         return [
             'name' => self::faker()->name(),
             'secret' => self::faker()->text(100),
+            'colour' => str_replace('#', '', self::faker()->hexColor()),
             'syncHash' => self::faker()->text(128),
             'otpDigits' => self::faker()->randomNumber(),
             'totpStep' => self::faker()->randomNumber(),
