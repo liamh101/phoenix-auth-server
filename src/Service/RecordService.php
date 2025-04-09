@@ -25,6 +25,7 @@ readonly class RecordService
         $existingRecord->totpStep = $newRecord->totpStep;
         $existingRecord->otpDigits = $newRecord->otpDigits;
         $existingRecord->totpAlgorithm = $newRecord->totpAlgorithm;
+        $existingRecord->colour = $newRecord->colour;
         $existingRecord->syncHash = $hash;
 
         return $existingRecord;

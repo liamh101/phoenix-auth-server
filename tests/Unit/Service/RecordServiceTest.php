@@ -91,6 +91,7 @@ class RecordServiceTest extends TestCase
         $oldRecord->secret = '123456';
         $oldRecord->totpStep = 30;
         $oldRecord->otpDigits = 6;
+        $oldRecord->colour = '5c636a';
         $oldRecord->totpAlgorithm = null;
         $oldRecord->createdAt = new \DateTimeImmutable('yesterday');
         $oldRecord->updatedAt = new \DateTime('now');
@@ -101,6 +102,7 @@ class RecordServiceTest extends TestCase
         $newRecord->totpStep = 60;
         $newRecord->otpDigits = 8;
         $newRecord->totpAlgorithm = 'SHA512';
+        $newRecord->colour = 'ff636a';
 
         $updatedRecord = $service->updateExistingRecord($oldRecord, $newRecord);
 

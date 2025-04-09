@@ -34,6 +34,7 @@ class OtpRecordRepositoryTest extends IntegrationTestCase
         self::assertEquals($first->id, $result[0]->id);
         self::assertEquals($first->name, $result[0]->name);
         self::assertEquals($encryptionService->decryptString($first->secret), $result[0]->secret);
+        self::assertEquals($first->colour, $result[0]->colour);
         self::assertEquals($first->otpDigits, $result[0]->otpDigits);
         self::assertEquals($first->totpAlgorithm, $result[0]->totpAlgorithm);
         self::assertEquals($first->syncHash, $result[0]->syncHash);
@@ -181,6 +182,7 @@ class OtpRecordRepositoryTest extends IntegrationTestCase
         self::assertNotNull($result);
         self::assertEquals($record->id, $result->id);
         self::assertEquals($encryptionService->decryptString($record->secret), $result->secret);
+        self::assertEquals($record->colour, $result->colour);
         self::assertEquals($record->syncHash, $result->syncHash);
         self::assertEquals($record->otpDigits, $result->otpDigits);
         self::assertEquals($record->totpStep, $result->totpStep);

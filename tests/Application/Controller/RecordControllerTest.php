@@ -93,6 +93,7 @@ class RecordControllerTest  extends ApplicationTestCase
         self::assertEquals($record->id, $data['data']['id']);
         self::assertEquals($record->name, $data['data']['name']);
         self::assertEquals($recordSecret, $data['data']['secret']);
+        self::assertEquals($record->colour, $data['data']['colour']);
         self::assertEquals($record->totpStep, $data['data']['totpStep']);
         self::assertEquals($record->otpDigits, $data['data']['otpDigits']);
         self::assertEquals($record->totpAlgorithm, $data['data']['algorithm']);
@@ -119,6 +120,7 @@ class RecordControllerTest  extends ApplicationTestCase
         self::assertEquals($record->id, $data['data']['id']);
         self::assertEquals($record->name, $data['data']['name']);
         self::assertEquals($recordSecret, $data['data']['secret']);
+        self::assertEquals($record->colour, $data['data']['colour']);
         self::assertEquals($record->totpStep, $data['data']['totpStep']);
         self::assertEquals($record->otpDigits, $data['data']['otpDigits']);
         self::assertEquals($record->totpAlgorithm, $data['data']['algorithm']);
@@ -186,6 +188,7 @@ class RecordControllerTest  extends ApplicationTestCase
             'id' => $record->id,
             'name' => 'Hello World 1',
             'secret' => 'thisIsATest',
+            'colour' => 'ffffff',
             'totpStep' => 30,
             'otpDigits' => 8,
             'totpAlgorithm' => null
@@ -237,6 +240,7 @@ class RecordControllerTest  extends ApplicationTestCase
         $data = [
             'name' => 'Hello World 1',
             'secret' => 'thisIsATest',
+            'colour' => 'ffffff',
             'totpStep' => 30,
             'otpDigits' => 8,
             'totpAlgorithm' => null
@@ -267,6 +271,7 @@ class RecordControllerTest  extends ApplicationTestCase
         $data = [
             'name' => 'Hello World 1',
             'secret' => 'thisIsATest',
+            'colour' => 'fff123',
             'totpStep' => 30,
             'otpDigits' => 8,
             'totpAlgorithm' => null
@@ -293,6 +298,7 @@ class RecordControllerTest  extends ApplicationTestCase
         $data = [
             'name' => 'Hello World 1',
             'secret' => 'thisIsATest',
+            'colour' => 'fff123',
             'totpStep' => 30,
             'otpDigits' => 8,
             'totpAlgorithm' => null
